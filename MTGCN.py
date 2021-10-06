@@ -16,7 +16,7 @@ from torch_geometric.utils import dropout_adj, negative_sampling, remove_self_lo
 
 from sklearn import metrics
 
-EPOCH = 1500
+EPOCH = 2500
 
 data = torch.load("./data/CPDB_data.pkl")
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -44,7 +44,7 @@ def train(mask):
 
     pred, rl, c1, c2 = model()
 
-    loss = F.binary_cross_entropy_with_logits(pred[mask], Y[mask]) / (c1 * c1) + rl / (c2 * c2) + 4 * torch.log(c2 * c1)
+    loss = F.binary_cross_entropy_with_logits(pred[mask], Y[mask]) / (c1 * c1) + rl / (c2 * c2) + 2 * torch.log(c2 * c1)
     loss.backward()
     optimizer.step()
 
@@ -72,8 +72,8 @@ class Net(torch.nn.Module):
         self.lin1 = Linear(64, 100)
         self.lin2 = Linear(64, 100)
 
-        self.c1 = torch.nn.Parameter(torch.Tensor([2]))
-        self.c2 = torch.nn.Parameter(torch.Tensor([1]))
+        self.c1 = torch.nn.Parameter(torch.Tensor([0.5]))
+        self.c2 = torch.nn.Parameter(torch.Tensor([0.5]))
 
     def forward(self):
         edge_index, _ = dropout_adj(data.edge_index, p=0.5,

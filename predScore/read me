@@ -1,0 +1,1 @@
+All labeled data were input into MTGCN to train the model and output the prediction scores of every gene for pancander and certain cancer subtypes. 
